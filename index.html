@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css"
+    />
+    <style>
+      body {
+        padding: 20px;
+        background-color: #121818;
+        height: 100vh;
+      }
+      h1 {
+        text-align: center;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+  <script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    function App() {
+      const [numX, setNumX] = React.useState("");
+      const [numY, setNumY] = React.useState("");
+      const [operation, setOperation] = React.useState("");
+      const [result, setResult] = React.useState(undefined);
+
+      const onChangeX = (event) => {
+        setNumX(event.target.value);
+      };
+      const onChangeY = (event) => {
+        setNumY(event.target.value);
+      };
+      const onChangeOperation = (event) => {
+        setOperation(event.target.value);
+      };
+      const onSubmit = (event) => {
+        event.preventDefault();
+        if (
+          numX === "" ||
+          numY === "" ||
+          (operation !== "+" &&
+            operation !== "-" &&
+            operation !== "*" &&
+            operation !== "/")
+        ) {
+          alert("Please fill all the fields!");
+          return;
+        }
+        if (operation === "+") {
+          setResult(Number(numX) + Number(numY));
+        } else if (operation === "-") {
+          setResult(Number(numX) - Number(numY));
+        } else if (operation === "*") {
+          setResult(Number(numX) * Number(numY));
+        } else if (operation === "/") {
+          setResult(Number(numX) / Number(numY));
+        }
+      };
+
+      return (
+        <div className="container">
+          <h1>🔥 Calculator 🔥</h1>
+          <form onSubmit={onSubmit}>
+            <input
+              value={numX}
+              onChange={onChangeX}
+              type="number"
+              placeholder="👉🏻 Write a number..."
+            />
+            <input
+              value={numY}
+              onChange={onChangeY}
+              type="number"
+              placeholder="👉🏻 Write a number..."
+            />
+            <select onChange={onChangeOperation}>
+              <option>👉🏻 Select an operation</option>
+              <option>+</option>
+              <option>-</option>
+              <option>*</option>
+              <option>/</option>
+            </select>
+            <button>Calculate</button>
+          </form>
+          <h1>{result !== undefined ? `The result is: ${result}` : null}</h1>
+        </div>
+      );
+    }
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+  </script>
+</html>
