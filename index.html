@@ -24,54 +24,78 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel">
     function App() {
-      const [leftNumber, setLeftNumber] = React.useState();
-      const [rightNumber, setRightNumber] = React.useState();
+      const [left, setLeft] = React.useState('');
+      const [right, setRight] = React.useState('');
       const [operator, setOperator] = React.useState('');
-      const [result, setResult] = React.useState();
+      const [result, setResult] = React.useState('');
+
+      const reset = () => {
+        setLeft('');
+        setRight('');
+        setOperator('');
+        setResult('');
+      };
+
+      const handleResetClick = (event) => {
+        event.preventDefault();
+        reset();
+      };
 
       const operate = (operator) => {
         switch (operator) {
           case '+':
-            setResult(Number(leftNumber) + Number(rightNumber));
+            setResult(`Result: ${left + right}`);
             break;
           case '-':
-            setResult(Number(leftNumber) - Number(rightNumber));
+            setResult(`Result: ${left - right}`);
             break;
           case '*':
-            setResult(Number(leftNumber) * Number(rightNumber));
+            setResult(`Result: ${left * right}`);
             break;
           case '/':
-            if (Number(rightNumber) === 0) {
+            if (right === 0) {
               setResult('Cannot divide by zero');
               return;
             }
-            setResult(Number(leftNumber) / Number(rightNumber));
+            setResult(`Result: ${left / right}`);
             break;
           default:
             setResult('Invalid operator');
         }
       };
+
       React.useEffect(() => {
-        if (leftNumber && rightNumber && operator) {
-          operate(operator);
+        if (
+          isNaN(left) ||
+          isNaN(right) ||
+          operator == '' ||
+          left == '' ||
+          right == ''
+        ) {
+          return;
         }
-      }, [leftNumber, rightNumber, operator]);
+        operate(operator);
+      }, [left, right, operator]);
+
       return (
         <div className="container">
           <h1>🔥 Calculator 🔥</h1>
-          <form>
+          <form onSubmit={handleResetClick}>
             <input
               type="number"
               placeholder="Write a number"
-              value={leftNumber}
-              onChange={(e) => setLeftNumber(e.target.value)}
+              value={left}
+              onChange={(event) => setLeft(parseFloat(event.target.value))}
             />
             <select
-              onChange={(e) => {
-                setOperator(e.target.value);
+              value={operator}
+              onChange={(event) => {
+                setOperator(event.target.value);
               }}
             >
-              <option value="">Select operator </option>
+              <option value="" disabled>
+                Select operator
+              </option>
               <option value="+">+</option>
               <option value="-">-</option>
               <option value="*">*</option>
@@ -80,11 +104,11 @@
             <input
               type="number"
               placeholder="Write a number"
-              value={rightNumber}
-              onChange={(e) => setRightNumber(e.target.value)}
+              value={right}
+              onChange={(event) => setRight(parseFloat(event.target.value))}
             />
             <button>Reset</button>
-            {result && <h1>Result: {result}</h1>}
+            {result !== '' ? <h1>{result}</h1> : null}
           </form>
         </div>
       );
